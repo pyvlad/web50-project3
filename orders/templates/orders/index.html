@@ -1,16 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}
-  Project 3
-{% endblock %}
+{% block title %}Menu{% endblock %}
 
 {% block content %}
 
   {% for cat, products in data %}
     <h2>{{ cat.name }}</h2>
+    <ul style="list-style-type: none;">
     {% for item in products %}
-      <li>{{ item }}{% if item.price %}: {{ item.price }}${% endif %}</li>
+      <li>
+        {% if user.is_authenticated %}
+          <form action="{% url 'add_to_cart' %}" method="post" style="display: inline">
+            {% csrf_token %}
+            <input name="product_id" value="{{item.id}}" type="hidden">
+            <input type="submit" value="&#x1f6d2;">
+          </form>
+        {% endif %}
+        <span>{{ item }}{% if item.price %}: {{ item.price }}${% endif %}</span>
+      </li>
     {% endfor %}
+    </ul>
   {% endfor %}
 
 {% endblock %}

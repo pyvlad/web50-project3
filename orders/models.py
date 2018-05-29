@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 # Create your models here.
@@ -30,3 +31,14 @@ class Product(models.Model):
         else:
             size = ""
         return f"{self.name} {size}"
+
+
+class Cart(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, blank=True, related_name="carts")
+
+    def __str__(self):
+        return f"{self.user.username}"
+
+    def total_sum(self):
+        return sum(filter(None, [product.price for product in self.products.all()]))

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Your cart{% endblock %}
+
+{% block content %}
+
+  <h2>Your cart</h2>
+  <table>
+    <tr><th>product</th><th>category</th><th>size</th><th>price</th></tr>
+    {% for p in cart.products.all %}
+      <tr>
+        <td>{{p.name}}</td>
+        <td>{{p.category}}</td>
+        <td>{% if p.size %}{{p.size}}{% endif %}</td>
+        <td>{{p.price}}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">Your cart is empty</td></tr>
+    {% endfor %}
+    <tr>
+      <td colspan="3">TOTAL</td>
+      <td>{{ cart.total_sum }}</td>
+    </tr>
+  </table>
+
+{% endblock %}
