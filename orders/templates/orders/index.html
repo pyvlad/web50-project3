@@ -5,39 +5,12 @@
 {% endblock %}
 
 {% block content %}
-  <h2>Pizza</h2>
-  {% for item in pizzas %}
-    <li>{{ item }}: {{ item.price }}$</li>
-  {% endfor %}
 
-  <h3>Toppings</h3>
-  {% for item in pizzatoppings %}
-    <li>{{ item }}</li>
-  {% endfor %}
-
-  <h2>Subs</h2>
-  {% for item in subs %}
-    <li>{{ item }}: {{ item.price }}$</li>
-  {% endfor %}
-
-  <h3>Sub Extras</h3>
-  {% for item in subadditions %}
-    <li>{{ item }}: {{ item.price }}$</li>
-  {% endfor %}
-
-  <h2>Pasta</h2>
-  {% for item in pastas %}
-    <li>{{ item }}: {{ item.price }}$</li>
-  {% endfor %}
-
-  <h2>Salads</h2>
-  {% for item in salads %}
-    <li>{{ item }}: {{ item.price }}$</li>
-  {% endfor %}
-
-  <h2>Dinner Platters</h2>
-  {% for item in dinnerplatters %}
-    <li>{{ item }}: {{ item.price }}$</li>
+  {% for cat, products in data %}
+    <h2>{{ cat.name }}</h2>
+    {% for item in products %}
+      <li>{{ item }}{% if item.price %}: {{ item.price }}${% endif %}</li>
+    {% endfor %}
   {% endfor %}
 
 {% endblock %}

@@ -1,32 +1,61 @@
 from orders import models
 
 
-# PIZZA
-REGULAR_PIZZAS = [
-    ("Cheese", 0, (11.70, 16.45)),
-    ("Cheese", 1, (12.70, 18.45)),
-    ("Cheese", 2, (14.20, 20.45)),
-    ("Cheese", 3, (15.20, 22.45)),
-    ("Special", 0, (16.75, 24.45))
+CATEGORIES = [
+    "Regular Pizza",
+    "Sicilian Pizza",
+    "Toppings",
+    "Subs",
+    "Sub Extras",
+    "Pasta",
+    "Salads",
+    "Dinner Platters"
 ]
-for r in REGULAR_PIZZAS:
-    item = models.Pizza(title=r[0], toppings_number=r[1], size="small", kind="regular", price=r[2][0])
-    item.save()
-    item = models.Pizza(title=r[0], toppings_number=r[1], size="large", kind="regular", price=r[2][1])
+for r in CATEGORIES:
+    item = models.Category(name=r)
     item.save()
 
-SICILIAN_PIZZAS = [
-    ("Cheese", 0, (22.45, 35.70)),
-    ("Cheese", 1, (24.45, 37.70)),
-    ("Cheese", 2, (26.45, 39.70)),
-    ("Cheese", 3, (27.45, 41.70)),
-    ("Special", 0, (28.45, 42.70))
+SIZES = ["large", "small"]
+for r in SIZES:
+    item = models.ProductSize(name=r)
+    item.save()
+
+SMALL = models.ProductSize.objects.get(name="small")
+LARGE = models.ProductSize.objects.get(name="large")
+
+
+# PIZZA
+REGULAR_PIZZAS = [
+    ("Cheese", 11.70, 16.45),
+    ("1 topping", 12.70, 18.45),
+    ("2 toppings", 14.20, 20.45),
+    ("3 toppings", 15.20, 22.45),
+    ("Special", 16.75, 24.45)
 ]
+cat = models.Category.objects.get(name="Regular Pizza")
+for r in REGULAR_PIZZAS:
+    item = models.Product(name=r[0], size=SMALL, category=cat, price=r[1])
+    item.save()
+    item = models.Product(name=r[0], size=LARGE, category=cat, price=r[2])
+    item.save()
+
+
+
+SICILIAN_PIZZAS = [
+    ("Cheese", 22.45, 35.70),
+    ("1 item", 24.45, 37.70),
+    ("2 items", 26.45, 39.70),
+    ("3 items", 27.45, 41.70),
+    ("Special", 28.45, 42.70)
+]
+cat = models.Category.objects.get(name="Sicilian Pizza")
 for r in SICILIAN_PIZZAS:
-    item = models.Pizza(title=r[0], toppings_number=r[1], size="small", kind="sicilian", price=r[2][0])
+    item = models.Product(name=r[0], size=SMALL, category=cat, price=r[1])
     item.save()
-    item = models.Pizza(title=r[0], toppings_number=r[1], size="large", kind="sicilian", price=r[2][1])
+    item = models.Product(name=r[0], size=LARGE, category=cat, price=r[2])
     item.save()
+
+
 
 TOPPINGS = """Pepperoni
 Sausage
@@ -47,12 +76,13 @@ Anchovies
 Black Olives
 Fresh Garlic
 Zucchini"""
+cat = models.Category.objects.get(name="Toppings")
 for r in TOPPINGS.split("\n"):
-    item = models.PizzaTopping(title=r)
+    item = models.Product(name=r, category=cat)
     item.save()
 
 
-# SUBS
+
 SUBS = [
     ("Cheese", 6.50, 7.95),
     ("Italian", 6.50, 7.95),
@@ -70,13 +100,16 @@ SUBS = [
     ("Fried Chicken", 6.95, 8.50),
     ("Veggie", 6.95, 8.50)
 ]
+cat = models.Category.objects.get(name="Subs")
 for r in SUBS:
     if r[1] is not None:
-        item = models.Sub(title=r[0], size="small", price=r[1])
+        item = models.Product(name=r[0], size=SMALL, category=cat, price=r[1])
         item.save()
     if r[2] is not None:
-        item = models.Sub(title=r[0], size="large", price=r[2])
+        item = models.Product(name=r[0], size=LARGE, category=cat, price=r[2])
         item.save()
+
+
 
 SUBADDITIONS = [
     ("Mushrooms", 0.5),
@@ -84,20 +117,24 @@ SUBADDITIONS = [
     ("Onions", 0.5),
     ("Extra Cheese", 0.5)
 ]
+cat = models.Category.objects.get(name="Sub Extras")
 for r in SUBADDITIONS:
-    item = models.SubAddition(title=r[0], price=r[1])
+    item = models.Product(name=r[0], category=cat, price=r[1])
     item.save()
 
 
-# OTHER
+
 PASTAS = [
     ("Baked Ziti w/Mozzarella", 6.50),
     ("Baked Ziti w/Meatballs", 8.75),
     ("Baked Ziti w/Chicken", 9.75)
 ]
+cat = models.Category.objects.get(name="Pasta")
 for r in PASTAS:
-    item = models.Pasta(title=r[0], price=r[1])
+    item = models.Product(name=r[0], category=cat, price=r[1])
     item.save()
+
+
 
 SALADS = [
     ("Garden Salad", 6.25),
@@ -105,9 +142,13 @@ SALADS = [
     ("Antipasto", 8.25),
     ("Salad w/Tuna", 8.25)
 ]
+cat = models.Category.objects.get(name="Salads")
 for r in SALADS:
-    item = models.Salad(title=r[0], price=r[1])
+    item = models.Product(name=r[0], category=cat, price=r[1])
     item.save()
+
+
+
 
 DINNERPLATTERS = [
     ("Garden Salad", 35.00, 60.00),
@@ -117,10 +158,11 @@ DINNERPLATTERS = [
     ("Meatball Parm", 45.00, 70.00),
     ("Chicken Parm", 45.00, 80.00)
 ]
-for r in DINNERPLATTERS:
+cat = models.Category.objects.get(name="Dinner Platters")
+for r in SUBS:
     if r[1] is not None:
-        item = models.DinnerPlatter(title=r[0], size="small", price=r[1])
+        item = models.Product(name=r[0], size=SMALL, category=cat, price=r[1])
         item.save()
     if r[2] is not None:
-        item = models.DinnerPlatter(title=r[0], size="large", price=r[2])
+        item = models.Product(name=r[0], size=LARGE, category=cat, price=r[2])
         item.save()

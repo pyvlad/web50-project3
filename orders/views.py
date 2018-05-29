@@ -5,13 +5,8 @@ from . import models
 
 # Create your views here.
 def index(request):
-    return render(request, "orders/index.html", {
-        "pizzas": models.Pizza.objects.all(),
-        "pizzatoppings": models.PizzaTopping.objects.all(),
-        "subs": models.Sub.objects.all(),
-        "subadditions": models.SubAddition.objects.all(),
-        "pastas": models.Pasta.objects.all(),
-        "salads": models.Salad.objects.all(),
-        "dinnerplatters": models.DinnerPlatter.objects.all(),
-        }
-    )
+    cats = models.Category.objects.all()
+    data = []
+    for cat in cats:
+        data += [(cat, models.Product.objects.filter(category=cat))]
+    return render(request, "orders/index.html", {"data": data})
