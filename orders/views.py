@@ -25,6 +25,12 @@ def cart(request):
 
 
 @login_required
+def shop(request):
+    cartitems = models.CartItem.objects.all(user=request.user)
+    return render(request, "orders/cart.html", {"cart": cartitems})
+
+
+@login_required
 def add_to_cart(request):
     try:
         product_id = int(request.POST["product_id"])
