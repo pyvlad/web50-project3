@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Your cart{% endblock %}
+
+{% block content %}
+
+<p>{{ item.product.name }}</p>
+{% if item.size %}
+  <p>{{ item.size }}</p>
+{% endif %}
+<p>{{ item.price }}</p>
+
+<form action="{% url 'add_to_cart' %}" method="post" style="display: inline">
+  {% csrf_token %}
+  <input name="item_id" value="{{ item.id }}" type="hidden">
+
+  {% if extras_category_name %}
+    {% if extras_amount %}
+      <p>{{ extras_category_name }}</p>
+      {% for num in extras_amount %}
+      <select name="extras">
+        {% for extra in extras %}
+        <option value="{{ extra.id }}">{{ extra.product.name }}</option>
+        {% endfor %}
+      </select>
+      {% endfor %}
+
+    {% elif extras_amount is None %}
+      {% for extra in extras %}
+        <input type="checkbox" name="extras" value="{{ extra.id }}">Add {{ extra.product.name }} for {{ extra.price }}$<br>
+      {% endfor %}
+
+    {% endif %}
+  {% endif %}
+
+  <input type="submit" value="&#x1f6d2;">
+
+</form>
+
+{% endblock %}

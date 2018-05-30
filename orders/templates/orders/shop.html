@@ -5,29 +5,27 @@
 {% block content %}
 
   {% for cat, products in data %}
-    <h2>{{ cat.name }}</h2>
-    <table>
-      <tr>
-        <th>product</th>
-        <th>size</th>
-        <th>price</th>
-        <th>buy</th>
-      </tr>
-      {% for p in products %}
+    {% if cat.kind == "primary" %}
+      <h2>{{ cat.name }}</h2>
+      <table>
         <tr>
-          <td>{{p.name}}</td>
-          <td>{% if p.size %}{{p.size}}{% endif %}</td>
-          <td>{% if p.price %}{{p.price}}{% endif %}</td>
-          <td>
-            <form action="{% url 'add_to_cart' %}" method="post" style="display: inline">
-              {% csrf_token %}
-              <input name="product_id" value="{{p.id}}" type="hidden">
-              <input type="submit" value="&#x1f6d2;">
-            </form>
-          </td>
+          <th>product</th>
+          <th>size</th>
+          <th>price</th>
+          <th>buy</th>
         </tr>
-      {% endfor %}
-    </table>
+        {% for p in products %}
+          {% for item in p.menu_items.all %}
+          <tr>
+            <td>{{p.name}}</td>
+            <td>{% if item.size %}{{item.size}}{% endif %}</td>
+            <td>{% if item.price %}{{item.price}}{% endif %}</td>
+            <td><a href="{% url 'item' item.id %}">&#x1f6d2;</a></td>
+          </tr>
+          {% endfor %}
+        {% endfor %}
+      </table>
+    {% endif %}
   {% endfor %}
 
 {% endblock %}

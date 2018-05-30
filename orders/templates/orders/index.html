@@ -11,23 +11,15 @@
         <th>product</th>
         <th>size</th>
         <th>price</th>
-        {% if user.is_authenticated %}<th>buy</th>{% endif %}
       </tr>
       {% for p in products %}
+        {% for item in p.menu_items.all %}
         <tr>
           <td>{{p.name}}</td>
-          <td>{% if p.size %}{{p.size}}{% endif %}</td>
-          <td>{% if p.price %}{{p.price}}{% endif %}</td>
-          {% if user.is_authenticated %}
-          <td>
-            <form action="{% url 'add_to_cart' %}" method="post" style="display: inline">
-              {% csrf_token %}
-              <input name="product_id" value="{{p.id}}" type="hidden">
-              <input type="submit" value="&#x1f6d2;">
-            </form>
-          </td>
-          {% endif %}
+          <td>{% if item.size %}{{item.size}}{% endif %}</td>
+          <td>{% if item.price %}{{item.price}}{% endif %}</td>
         </tr>
+        {% endfor %}
       {% endfor %}
     </table>
   {% endfor %}

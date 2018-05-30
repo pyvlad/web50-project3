@@ -6,20 +6,23 @@
 
   <h2>Your cart</h2>
   <table>
-    <tr><th>product</th><th>category</th><th>size</th><th>price</th></tr>
-    {% for p in cart.products.all %}
-      <tr>
-        <td>{{p.name}}</td>
-        <td>{{p.category}}</td>
-        <td>{% if p.size %}{{p.size}}{% endif %}</td>
-        <td>{{p.price}}</td>
-      </tr>
+    <tr><th>id</th><th>product</th><th>category</th><th>size</th><th>price</th></tr>
+    {% for selection in selections %}
+      {% for item in selection.items.all %}
+        <tr>
+          <td>{{selection.id}}</td>
+          <td>{{item.product}}</td>
+          <td>{{item.product.category}}</td>
+          <td>{% if item.size %}{{item.size}}{% endif %}</td>
+          <td>{{item.price}}</td>
+        </tr>
+      {% endfor %}
     {% empty %}
-      <tr><td colspan="4">Your cart is empty</td></tr>
+      <tr><td colspan="5">Your cart is empty</td></tr>
     {% endfor %}
     <tr>
-      <td colspan="3">TOTAL</td>
-      <td>{{ cart.total_sum }}</td>
+      <td colspan="4">TOTAL</td>
+      <td>{{ total_sum }}</td>
     </tr>
   </table>
 
