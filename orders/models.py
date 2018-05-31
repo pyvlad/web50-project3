@@ -5,7 +5,7 @@ from django.conf import settings
 # Create your models here.
 # MENU
 class Category(models.Model):
-    KIND_CHOICES = (("primary", "Primary"), ("supplementary", "Supplementary"))
+    KIND_CHOICES = (("primary", "Primary"), ("components", "Components"), ("additions", "Additions"))
     name = models.CharField(max_length=25)
     kind = models.CharField(max_length=15, choices=KIND_CHOICES, default="primary")
 

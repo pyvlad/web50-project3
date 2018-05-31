@@ -14,7 +14,7 @@
   {% csrf_token %}
   <input name="item_id" value="{{ item.id }}" type="hidden">
 
-  {% if extras_category_name %}
+  {% if extras_category_kind == "components" %}
     {% if extras_amount %}
       <p>{{ extras_category_name }}</p>
       {% for num in extras_amount %}
@@ -24,12 +24,14 @@
         {% endfor %}
       </select>
       {% endfor %}
+    {% endif %}
+  {% endif %}
 
-    {% elif extras_amount is None %}
+  {% if extras_category_kind == "additions" %}
+    {% if extras_amount is None %}
       {% for extra in extras %}
         <input type="checkbox" name="extras" value="{{ extra.id }}">Add {{ extra.product.name }} for {{ extra.price }}$<br>
       {% endfor %}
-
     {% endif %}
   {% endif %}
 

@@ -34,6 +34,7 @@ def item(request, item_id):
     context["item"] = item
 
     if item.product.extras_category:
+        context["extras_category_kind"] = item.product.extras_category.kind
         context["extras_category_name"] = item.product.extras_category.name
         context["extras"] = models.MenuItem.objects.filter(product__category=item.product.extras_category)
         if item.product.extras_amount is not None:

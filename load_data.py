@@ -5,9 +5,9 @@ SIZES = ("small", "large")
 CATEGORIES = [
     ("Regular Pizza", "primary"),
     ("Sicilian Pizza", "primary"),
-    ("Toppings", "supplementary"),
+    ("Toppings", "components"),
     ("Subs", "primary"),
-    ("Sub Extras", "supplementary"),
+    ("Sub Extras", "additions"),
     ("Pasta", "primary"),
     ("Salads", "primary"),
     ("Dinner Platters", "primary")

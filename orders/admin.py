@@ -24,5 +24,24 @@ class MenuItemAdmin(admin.ModelAdmin):
         return obj.product.category
     get_category.short_description = 'Category'
     get_category.admin_order_field = 'product__category'
-
 admin.site.register(models.MenuItem, MenuItemAdmin)
+
+
+class SelectedItemInline(admin.StackedInline):
+    model = models.SelectedItem
+    extra = 1
+
+class SelectionAdmin(admin.ModelAdmin):
+    list_display = ['user']
+    inlines = [SelectedItemInline]
+admin.site.register(models.Selection, SelectionAdmin)
+
+class SelectedItemAdmin(admin.ModelAdmin):
+    list_display = ['item', 'get_user', 'get_selection_id', 'get_category']
+    def get_user(self, obj):
+        return obj.selection.user
+    def get_selection_id(self, obj):
+        return obj.selection.id
+    def get_category(self, obj):
+        return obj.item.product.category.kind
+admin.site.register(models.SelectedItem, SelectedItemAdmin)
