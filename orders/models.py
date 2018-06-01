@@ -33,11 +33,15 @@ class MenuItem(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
 
     def __str__(self):
+        if self.product.category.kind == "primary":
+            cat = self.product.category.name + " - "
+        else:
+            cat = ""
         if self.size:
-            size = "[{}]".format(self.size[0])
+            size = "[{}]".format(self.size[0].upper())
         else:
             size = ""
-        return f"{self.product.name} {size}"
+        return f"{cat}{self.product.name} {size}"
 
 
 
@@ -47,9 +51,13 @@ class Selection(models.Model):
     # an instance might consist of just a MenuItem or of a MenuItem and supplementary/component MenuItems
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     items = models.ManyToManyField("MenuItem", through="SelectedItem")
+    ordered = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"cart item of {self.user.username}"
+        items = self.items.all()
+        main = str(items[0])
+        extras = "(" + ", ".join(str(x) for x in items[1:]) + ")" if items[1:] else ""
+        return main + extras
 
     def total_sum(self):
         return sum(filter(None, [item.price for item in self.items.all()]))
@@ -58,3 +66,9 @@ class Selection(models.Model):
 class SelectedItem(models.Model):
     item = models.ForeignKey("MenuItem", on_delete=models.CASCADE)
     selection = models.ForeignKey("Selection", on_delete=models.CASCADE)
+
+
+class Order(models.Model):
+    selections = models.ManyToManyField(Selection)
+    created = models.DateTimeField(auto_now_add=True, blank=True)
+    finished = models.BooleanField(default=False)

@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -6,21 +6,13 @@ from . import models
 
 
 # Create your views here.
+@login_required
 def index(request):
     cats = models.Category.objects.all()
     data = []
     for cat in cats:
         data += [(cat, models.Product.objects.filter(category=cat))]
     return render(request, "orders/index.html", {"data": data})
-
-
-@login_required
-def shop(request):
-    cats = models.Category.objects.all()
-    data = []
-    for cat in cats:
-        data += [(cat, models.Product.objects.filter(category=cat))]
-    return render(request, "orders/shop.html", {"data": data})
 
 
 @login_required
@@ -44,8 +36,28 @@ def item(request, item_id):
 
 @login_required
 def cart(request):
-    selections = models.Selection.objects.filter(user=request.user)
-    total_sum = sum(s.total_sum() for s in selections)
+    if request.method == "POST":
+        print("Hello")
+        order_status = request.POST["order_status"]
+        if order_status == "confirm":
+            selections = models.Selection.objects.filter(user=request.user, ordered=False)
+            order = models.Order()
+            order.save()
+            for selection in selections:
+                selection.ordered = True
+                selection.save()
+                order.selections.add(selection)
+            return HttpResponseRedirect(reverse("index"))
+        elif order_status == "cancel":
+            selections = models.Selection.objects.filter(user=request.user, ordered=False)
+            for selection in selections:
+                selection.delete()
+            return HttpResponseRedirect(reverse("index"))
+        else:
+            return HttpResponseBadRequest
+    else:
+        selections = models.Selection.objects.filter(user=request.user, ordered=False)
+        total_sum = sum(s.total_sum() for s in selections)
     return render(request, "orders/cart.html", {"selections": selections, "total_sum": total_sum})
 
 

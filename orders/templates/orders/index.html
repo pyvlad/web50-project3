@@ -5,23 +5,28 @@
 {% block content %}
 
   {% for cat, products in data %}
-    <h2>{{ cat.name }}</h2>
-    <table>
-      <tr>
-        <th>product</th>
-        <th>size</th>
-        <th>price</th>
-      </tr>
-      {% for p in products %}
-        {% for item in p.menu_items.all %}
-        <tr>
-          <td>{{p.name}}</td>
-          <td>{% if item.size %}{{item.size}}{% endif %}</td>
-          <td>{% if item.price %}{{item.price}}{% endif %}</td>
+    {% if cat.kind == "primary" %}
+      <h2>{{ cat.name }}</h2>
+      <table class="mytable">
+        <tr class="header">
+          <th>product</th>
+          <th>size</th>
+          <th>price</th>
+          <th>buy</th>
         </tr>
+        {% for p in products %}
+          {% cycle 'odd' 'even' as cls silent %}
+          {% for item in p.menu_items.all %}
+          <tr class="{{ cls }}">
+            <td>{{p.name}}</td>
+            <td>{% if item.size %}{{item.size}}{% endif %}</td>
+            <td>{% if item.price %}{{item.price}}{% endif %}</td>
+            <td><a href="{% url 'item' item.id %}">&#x1f6d2;</a></td>
+          </tr>
+          {% endfor %}
         {% endfor %}
-      {% endfor %}
-    </table>
+      </table>
+    {% endif %}
   {% endfor %}
 
 {% endblock %}
